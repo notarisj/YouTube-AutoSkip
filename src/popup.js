@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-document.getElementById('toggleButton').addEventListener('click', function() {
+document.getElementById('pauseButton').addEventListener('click', function() {
   chrome.runtime.sendMessage({message: "toggleState"}, function(response) {
     updateButtonLabel(response.state);
   });
@@ -12,8 +12,8 @@ document.getElementById('toggleButton').addEventListener('click', function() {
 
 function updateButtonLabel(isPaused) {
   if (isPaused) {
-    document.getElementById('toggleButton').textContent = "Resume";
+    document.getElementById('pauseButton').textContent = "Resume";
   } else {
-    document.getElementById('toggleButton').textContent = "Pause";
+    document.getElementById('pauseButton').textContent = "Pause";
   }
 }
