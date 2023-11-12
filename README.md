@@ -4,6 +4,28 @@
 
 AutoSkip for YouTube is a Chrome extension designed to enhance the YouTube viewing experience by automatically skipping ads. I initially intended to skip ads only after the waiting time, surprisingly it skips ads right from the start. However, it's important to note that it does not work with unskippable ads.
 
+## Other browsers
+
+1. **Safari**
+
+It is possible to make it run in safari but it requires Xcode to build the extension and allow unsigned extensions everytime you close safari. Run the following command:
+
+```bash
+xcrun safari-web-extension-converter /path/to/YouTube-AutoSkip/src
+```
+
+If everything was correct you should see:
+
+```bash
+Xcode Project Location: /Users/<username>
+App Name: YouTube AutoSkip
+App Bundle Identifier: com.yourCompany.YouTube-AutoSkip
+Platform: All
+Language: Swift
+```
+
+After that Xcode should open automatically. Build the app and copy it to `Applications` folder. Open safari, allow unsigned extensions and enable the extension from the settings.
+
 ## Installation
 
 1. Clone the repository or download the ZIP file.
