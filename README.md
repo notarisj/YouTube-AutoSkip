@@ -1,4 +1,4 @@
-AutoSkip for YouTube (Chrome Extension)
+# AutoSkip for YouTube (Chrome Extension)
 
 ## Description
 
