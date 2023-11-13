@@ -2,9 +2,10 @@ function checkAndSkipAds() {
   chrome.runtime.sendMessage({message: "getState"}, function(response) {
     if (!response.state) {
       let videoPlayer = document.querySelector('video');
+      let adOverlay = document.querySelector('.ytp-ad-player-overlay');
       let adDurationElement = document.querySelector('.ytp-ad-duration-remaining');
 
-      if (videoPlayer && adDurationElement) {
+      if (adOverlay && adDurationElement) {
         // Extract remaining ad duration
         let durationText = adDurationElement.innerText;
         let durationParts = durationText.split(':').map(part => parseInt(part, 10));
