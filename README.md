@@ -2,7 +2,7 @@
 
 ## Description
 
-AutoSkip for YouTube is a Chrome extension designed to enhance the YouTube viewing experience by automatically skipping ads. I initially intended to skip ads only after the waiting time, surprisingly it skips ads right from the start.
+AutoSkip for YouTube is a Chrome extension designed to enhance the YouTube viewing experience by automatically skipping ads. I initially intended to skip ads only after the waiting time, surprisingly it skips them right from the start.
 
 ## Other browsers
 
@@ -37,7 +37,7 @@ After that Xcode should open automatically. Build the app and copy it to `Applic
 
 ## How it Works
 
-The extension uses a content script that periodically checks for the "Skip Ad" button on YouTube, clicking it when found. While effective, this periodic checking could be further optimized.
+The extension uses a content script that periodically checks for the `ytp-ad-player-overlay`. When it is available it calculates the remaining time of the ad and sets the video playback at the same time so it is skipped. While effective, this periodic checking could be further optimized.
 
 ## Limitations
 
