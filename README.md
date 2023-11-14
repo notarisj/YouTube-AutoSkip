@@ -1,14 +1,18 @@
-# AutoSkip for YouTube (Chrome Extension)
+# AutoSkip for YouTube (Chrome Extension) 
 
 ## Description
 
-AutoSkip for YouTube is a Chrome extension designed to enhance the YouTube viewing experience by automatically skipping ads. I initially intended to skip ads only after the waiting time, surprisingly it skips them right from the start.
+AutoSkip for YouTube is a Chrome extension designed to enhance the YouTube viewing experience by automatically skipping ads. I initially intended to use a script that clicked the "Skip ad" button when it appeared. It turns out that it is available in the source code from the start so it is possible to skip the ad without waiting for 5 seconds. When it detects an ad but fails to find the skip button, this happens with the unskippable ads, it will mute and speed it up so it is almost unnoticeable. I guess this also counts as watching the full ad.
 
 ## Other browsers
 
-1. **Safari**
+1. **Chromium**
 
-It is possible to run in safari but it requires Xcode to build and you must allow unsigned extensions everytime you close it. Run the following command:
+All Chromium browsers (i.e. Chrome, Edge, Brave, Opera) will work exactly the same way, see installation below.
+
+2. **Safari**
+
+It is possible to run in safari but it requires Xcode to build and you must allow unsigned extensions every time you close it. Run the following command:
 
 ```bash
 xcrun safari-web-extension-converter /path/to/YouTube-AutoSkip/src
@@ -37,7 +41,7 @@ After that Xcode should open automatically. Build the app and copy it to `Applic
 
 ## How it Works
 
-The extension uses a content script that periodically checks for the `ytp-ad-player-overlay`. When it is available it calculates the remaining time of the ad and sets the video playback at the same time so it is skipped. While effective, this periodic checking could be further optimized.
+The extension uses a content script that periodically checks for the "Skip ad" button. When it is available it presses it. When the button is not available, with unskippable ads, it will verify that `ytp-ad-player-overlay` exists and it will mute the audio and set the playback rate to 10x. While effective, this periodic checking could be further optimized using `MutationObserver`.
 
 ## Limitations
 
