@@ -6,8 +6,6 @@
 // let durationParts = durationText.split(':').map(part => parseInt(part, 10));
 // let adDurationInSeconds = durationParts.reduce((total, part) => (total * 60) + part, 0);
 
-setInterval(checkAndSkipAds, 1000);
-
 function checkAndSkipAds() {
   chrome.runtime.sendMessage({message: "getState"}, function(response) {
     if (!response.state) {
