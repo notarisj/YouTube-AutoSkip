@@ -8,17 +8,17 @@ AutoSkip for YouTube is a Chrome extension designed to enhance the YouTube viewi
 
 1. **Chromium**
 
-All Chromium browsers (i.e. Chrome, Edge, Brave, Opera) will work exactly the same way, see installation below.
+All Chromium browsers (i.e. Chrome, Edge, Brave, Opera) will work the same way, see the installation below.
 
 2. **Safari**
 
-It is possible to run in safari but it requires Xcode to build and you must allow unsigned extensions every time you close it. Run the following command:
+It is possible to run in Safari but it requires Xcode to build. You must sign it with your certificate or allow unsigned extensions every time you close it. Run the following command:
 
 ```bash
 xcrun safari-web-extension-converter /path/to/YouTube-AutoSkip/src
 ```
 
-If everything was correct you should see:
+If everything is correct you should see:
 
 ```bash
 Xcode Project Location: /Users/<username>
@@ -28,7 +28,7 @@ Platform: All
 Language: Swift
 ```
 
-After that Xcode should open automatically. Build the app and copy it to `Applications` folder. Open safari, allow unsigned extensions and enable the extension from the settings.
+After that Xcode should open automatically. Build the app and copy it to `Applications` folder. Open Safari, allow unsigned extensions and enable the extension from the settings.
 
 ## Installation
 
