@@ -15,7 +15,7 @@ All Chromium browsers (i.e. Chrome, Edge, Brave, Opera) will work the same way, 
 It is possible to run in Safari but it requires Xcode to build. You must sign it with your certificate or allow unsigned extensions every time you close it. Run the following command:
 
 ```bash
-xcrun safari-web-extension-converter /path/to/YouTube-AutoSkip/src
+xcrun safari-web-extension-converter /path/to/YouTube-AutoSkip/src --macos-only --app-name "YouTube AutoSkip"
 ```
 
 If everything is correct you should see:
@@ -24,7 +24,7 @@ If everything is correct you should see:
 Xcode Project Location: /Users/<username>
 App Name: YouTube AutoSkip
 App Bundle Identifier: com.yourCompany.YouTube-AutoSkip
-Platform: All
+Platform: macOS
 Language: Swift
 ```
 
