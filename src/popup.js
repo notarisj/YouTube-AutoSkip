@@ -1,3 +1,4 @@
+// Event listener for DOMContentLoaded
 document.addEventListener('DOMContentLoaded', function() {
     chrome.runtime.sendMessage({
         message: "getState"
@@ -6,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+// Event listener for pauseButton click
 document.getElementById('pauseButton').addEventListener('click', function() {
     chrome.runtime.sendMessage({
         message: "toggleState"
@@ -14,6 +16,12 @@ document.getElementById('pauseButton').addEventListener('click', function() {
     });
 });
 
+
+/**
+ * @function updateButtonLabel
+ * @description Updates the button label based on the extension state.
+ * @param {boolean} isPaused - The current state of the extension.
+ */
 function updateButtonLabel(isPaused) {
     if (isPaused) {
         document.getElementById('pauseButton').textContent = "Resume";
