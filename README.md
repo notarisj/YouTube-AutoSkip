@@ -41,7 +41,7 @@ After that Xcode should open automatically. Build the app and copy it to `Applic
 
 ## How it Works
 
-The extension uses a content script that periodically checks for the "Skip ad" button. When it is available it presses it. When the button is not available, with unskippable ads, it will verify that `ytp-ad-player-overlay` exists and it will mute the audio and set the playback rate to 10x. While effective, this periodic checking could be further optimized using `MutationObserver`.
+The extension uses a content script with a MutationObserver to dynamically observe elements such as the "Skip ad" button, as well as various ad formats like banners. When it detects the "Skip ad" button, the extension automatically triggers it. When the button is not available, with unskippable ads, it will verify that `ytp-ad-player-overlay` exists and it will mute the audio and set the playback rate to 10x.
 
 ## Limitations
 
