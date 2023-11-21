@@ -74,6 +74,8 @@ function handleMutations(mutationsList, observer) {
 const config = { childList: true, subtree: true };
 let observer = new MutationObserver(handleMutations);
 observer.observe(document.body, config);
+removeAds();
+console.log('test');
 
 chrome.runtime.onMessage.addListener(function(request) {
     if (request.message === 'updateObserver') {
