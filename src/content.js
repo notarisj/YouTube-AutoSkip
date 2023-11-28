@@ -1,25 +1,24 @@
-/**
- * @function removeAds
- * @description Controls the removal of ads on the YouTube page based on the extension state.
- * @fires chrome.runtime.sendMessage
- */
-function removeAds() {
+function clickSkipButton() {
     var skipButton = document.querySelector('.ytp-ad-skip-button');
     var skipButtonModern = document.querySelector('.ytp-ad-skip-button-modern');
-    var adOverlay = document.querySelector('.ytp-ad-player-overlay');
-
+    
     if (skipButton) {
         skipButton.click();
     } else if (skipButtonModern) {
         skipButtonModern.click();
-    } else if (adOverlay) {
-        let videoPlayer = document.querySelector('video');
-        if (videoPlayer) {
-            videoPlayer.muted = true;
-            videoPlayer.playbackRate = 10;
-        }
     }
+}
 
+function skipUnskippableAd() {
+    var adOverlay = document.querySelector('.ytp-ad-player-overlay');
+    let videoPlayer = document.querySelector('video');
+    if (videoPlayer) {
+        videoPlayer.muted = true;
+        videoPlayer.playbackRate = 16;
+    }
+}
+
+function removeBannerAds() {
     // Remove ad from the top row of Home. This is handled differently from the others because
     // ytd-rich-item-renderer is used for all videos. It has to match ytd-ad-slot-renderer and
     // then find the closest ancestor.
@@ -35,8 +34,13 @@ function removeAds() {
     removeElement('ytd-player-legacy-desktop-watch-ads-renderer'); // Remove top banner while playing video 1
     removeElement('ytd-action-companion-ad-renderer'); // Remove top banner while playing video 2
     removeElement('ytd-ad-slot-renderer'); // Remove ads between videos
-    
-    // Auto click "Don't renew" on promo popups
+}
+
+/**
+ * @function removePromoPopups
+ * @description Auto click "Don't renew" on promo popups.
+ */
+function removePromoPopups() {
     removePopup('yt-mealbar-promo-renderer', '#dismiss-button'); // type 1
     removePopup('ytmusic-mealbar-promo-renderer', '.dismiss-button'); // type 2
 }
@@ -67,38 +71,61 @@ function removePopup(popupName, preferredButton) {
     }
 }
 
-// Function to filter only the add elements from all the mutations
+/**
+ * @function handleMutations
+ * @description Handles mutations in the DOM and triggers specific function based on the added nodes.
+ * @param {MutationRecord[]} mutationsList - List of mutation records describing the changes to the DOM.
+ * @param {MutationObserver} observer - The MutationObserver instance.
+ */
 function handleMutations(mutationsList, observer) {
+    const handleAdSkipButton = (addedNode) => {
+        if (addedNode.classList.contains('ytp-ad-skip-button') ||
+            addedNode.classList.contains('ytp-ad-skip-button-modern')) {
+            clickSkipButton();
+        }
+    };
+
+    const handleAdPlayerOverlay = (addedNode) => {
+        if (addedNode.classList.contains('ytp-ad-player-overlay')) {
+            skipUnskippableAd();
+        }
+    };
+
+    const handleAdSlotRenderer = (addedNode) => {
+        if (addedNode.classList.contains('ytd-ad-slot-renderer') ||
+            addedNode.classList.contains('ytd-banner-promo-renderer') ||
+            addedNode.classList.contains('ytd-player-legacy-desktop-watch-ads-renderer') ||
+            addedNode.classList.contains('ytd-action-companion-ad-renderer')) {
+            removeBannerAds();
+        }
+    };
+
+    const handleMealbarPromoRenderer = (addedNode) => {
+        if (addedNode.classList.contains('yt-mealbar-promo-renderer') ||
+            addedNode.classList.contains('ytmusic-mealbar-promo-renderer')) {
+            removePromoPopups();
+        }
+    };
+
     for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
             mutation.addedNodes.forEach(addedNode => {
                 if (addedNode.nodeType === 1) { // Check if it's an element node
-                    const adClasses = [
-                        'ytp-ad-skip-button',
-                        'ytp-ad-skip-button-modern',
-                        'ytp-ad-player-overlay',
-                        'ytd-ad-slot-renderer',
-                        'ytd-banner-promo-renderer',
-                        'ytd-player-legacy-desktop-watch-ads-renderer',
-                        'ytd-action-companion-ad-renderer',
-                        'yt-mealbar-promo-renderer',
-                        'ytmusic-mealbar-promo-renderer'
-                    ];
-
-                    if (adClasses.some(adClass => addedNode.classList.contains(adClass))) {
-                        removeAds();
-                    }
+                    handleAdSkipButton(addedNode);
+                    handleAdPlayerOverlay(addedNode);
+                    handleAdSlotRenderer(addedNode);
+                    handleMealbarPromoRenderer(addedNode);
                 }
             });
         }
     }
 }
 
-
 const config = { childList: true, subtree: true };
 let observer = new MutationObserver(handleMutations);
 observer.observe(document.body, config);
-removeAds();
+removeBannerAds();
+removePromoPopups();
 
 chrome.runtime.onMessage.addListener(function(request) {
     if (request.message === 'updateObserver') {
@@ -109,12 +136,3 @@ chrome.runtime.onMessage.addListener(function(request) {
         }
     }
 });
-
-//chrome.runtime.sendMessage({
-//    message: "getState"
-//}, function(response) {
-//    if (!response.state) {
-//        // Disconnect observer if extension is initially paused
-//        observer.disconnect();
-//    }
-//});
