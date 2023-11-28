@@ -12,7 +12,7 @@ function clickSkipButton() {
 function skipUnskippableAd() {
     var adOverlay = document.querySelector('.ytp-ad-player-overlay');
     let videoPlayer = document.querySelector('video');
-    if (videoPlayer) {
+    if (videoPlayer && adOverlay) {
         videoPlayer.muted = true;
         videoPlayer.playbackRate = 16;
     }
@@ -71,6 +71,13 @@ function removePopup(popupName, preferredButton) {
     }
 }
 
+function warmUp() {
+    clickSkipButton();
+    skipUnskippableAd();
+    removeBannerAds();
+    removePromoPopups();
+}
+
 /**
  * @function handleMutations
  * @description Handles mutations in the DOM and triggers specific function based on the added nodes.
@@ -78,20 +85,16 @@ function removePopup(popupName, preferredButton) {
  * @param {MutationObserver} observer - The MutationObserver instance.
  */
 function handleMutations(mutationsList, observer) {
-    const handleAdSkipButton = (addedNode) => {
+    const handleAdSkip = (addedNode) => {
         if (addedNode.classList.contains('ytp-ad-skip-button') ||
-            addedNode.classList.contains('ytp-ad-skip-button-modern')) {
+            addedNode.classList.contains('ytp-ad-skip-button-modern') ||
+            addedNode.classList.contains('ytp-ad-player-overlay')) {
             clickSkipButton();
-        }
-    };
-
-    const handleAdPlayerOverlay = (addedNode) => {
-        if (addedNode.classList.contains('ytp-ad-player-overlay')) {
             skipUnskippableAd();
         }
     };
 
-    const handleAdSlotRenderer = (addedNode) => {
+    const handleBannerAds = (addedNode) => {
         if (addedNode.classList.contains('ytd-ad-slot-renderer') ||
             addedNode.classList.contains('ytd-banner-promo-renderer') ||
             addedNode.classList.contains('ytd-player-legacy-desktop-watch-ads-renderer') ||
@@ -100,7 +103,7 @@ function handleMutations(mutationsList, observer) {
         }
     };
 
-    const handleMealbarPromoRenderer = (addedNode) => {
+    const handlePromoPopups = (addedNode) => {
         if (addedNode.classList.contains('yt-mealbar-promo-renderer') ||
             addedNode.classList.contains('ytmusic-mealbar-promo-renderer')) {
             removePromoPopups();
@@ -111,10 +114,9 @@ function handleMutations(mutationsList, observer) {
         if (mutation.type === 'childList') {
             mutation.addedNodes.forEach(addedNode => {
                 if (addedNode.nodeType === 1) { // Check if it's an element node
-                    handleAdSkipButton(addedNode);
-                    handleAdPlayerOverlay(addedNode);
-                    handleAdSlotRenderer(addedNode);
-                    handleMealbarPromoRenderer(addedNode);
+                    handleAdSkip(addedNode);
+                    handleBannerAds(addedNode);
+                    handlePromoPopups(addedNode);
                 }
             });
         }
@@ -133,6 +135,7 @@ chrome.runtime.onMessage.addListener(function(request) {
             observer.disconnect();
         } else {
             observer.observe(document.body, config);
+            warmUp();
         }
     }
 });
