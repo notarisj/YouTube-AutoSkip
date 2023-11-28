@@ -35,7 +35,10 @@ function removeAds() {
     removeElement('ytd-player-legacy-desktop-watch-ads-renderer'); // Remove top banner while playing video 1
     removeElement('ytd-action-companion-ad-renderer'); // Remove top banner while playing video 2
     removeElement('ytd-ad-slot-renderer'); // Remove ads between videos
-
+    
+    // Auto click "Don't renew" on promo popups
+    removePopup('yt-mealbar-promo-renderer', '#dismiss-button'); // type 1
+    removePopup('ytmusic-mealbar-promo-renderer', '.dismiss-button'); // type 2
 }
 
 /**
@@ -47,6 +50,20 @@ function removeElement(selector) {
     var adElement = document.querySelector(selector);
     if (adElement) {
         adElement.remove();
+    }
+}
+
+/**
+ * @function removePopup
+ * @description Removes promo popup by clicking the specified button.
+ * @param {string} popupName - CSS selector for the promo popup element.
+ * @param {string} preferredButton - CSS selector for the preferred button within the popup.
+ */
+function removePopup(popupName, preferredButton) {
+    var popupPromoRenderer = document.querySelector(popupName);
+    if (popupPromoRenderer) {
+        var dontRenewButton = mealbarPromoRenderer.querySelector(preferredButton);
+        if (dontRenewButton) dontRenewButton.click();
     }
 }
 
@@ -62,7 +79,9 @@ function handleMutations(mutationsList, observer) {
                         addedNode.classList.contains('ytd-ad-slot-renderer') ||
                         addedNode.classList.contains('ytd-banner-promo-renderer') ||
                         addedNode.classList.contains('ytd-player-legacy-desktop-watch-ads-renderer') ||
-                        addedNode.classList.contains('ytd-action-companion-ad-renderer')) {
+                        addedNode.classList.contains('ytd-action-companion-ad-renderer') ||
+                        addedNode.classList.contains('yt-mealbar-promo-renderer') ||
+                        addedNode.classList.contains('ytmusic-mealbar-promo-renderer')) {
                         removeAds();
                     }
                 }
