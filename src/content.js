@@ -71,24 +71,29 @@ function removePopup(popupName, preferredButton) {
 function handleMutations(mutationsList, observer) {
     for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
-            for (const addedNode of mutation.addedNodes) {
+            mutation.addedNodes.forEach(addedNode => {
                 if (addedNode.nodeType === 1) { // Check if it's an element node
-                    if (addedNode.classList.contains('ytp-ad-skip-button') ||
-                        addedNode.classList.contains('ytp-ad-skip-button-modern') ||
-                        addedNode.classList.contains('ytp-ad-player-overlay') ||
-                        addedNode.classList.contains('ytd-ad-slot-renderer') ||
-                        addedNode.classList.contains('ytd-banner-promo-renderer') ||
-                        addedNode.classList.contains('ytd-player-legacy-desktop-watch-ads-renderer') ||
-                        addedNode.classList.contains('ytd-action-companion-ad-renderer') ||
-                        addedNode.classList.contains('yt-mealbar-promo-renderer') ||
-                        addedNode.classList.contains('ytmusic-mealbar-promo-renderer')) {
+                    const adClasses = [
+                        'ytp-ad-skip-button',
+                        'ytp-ad-skip-button-modern',
+                        'ytp-ad-player-overlay',
+                        'ytd-ad-slot-renderer',
+                        'ytd-banner-promo-renderer',
+                        'ytd-player-legacy-desktop-watch-ads-renderer',
+                        'ytd-action-companion-ad-renderer',
+                        'yt-mealbar-promo-renderer',
+                        'ytmusic-mealbar-promo-renderer'
+                    ];
+
+                    if (adClasses.some(adClass => addedNode.classList.contains(adClass))) {
                         removeAds();
                     }
                 }
-            }
+            });
         }
     }
 }
+
 
 const config = { childList: true, subtree: true };
 let observer = new MutationObserver(handleMutations);
