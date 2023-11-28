@@ -16,7 +16,6 @@ document.getElementById('pauseButton').addEventListener('click', function() {
     });
 });
 
-
 /**
  * @function updateButtonLabel
  * @description Updates the button label based on the extension state.
