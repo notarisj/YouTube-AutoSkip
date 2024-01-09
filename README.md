@@ -2,7 +2,7 @@
 
 ## Description
 
-AutoSkip for YouTube is a Chrome extension designed to enhance the YouTube viewing experience by automatically skipping ads. I initially intended to use a script that clicked the "Skip ad" button when it appeared. It turns out that it is available in the source code from the start so it is possible to skip the ad without waiting. When it detects an ad but fails to find the skip button, this happens with the unskippable ads, it will mute and speed it up so it is almost unnoticeable. I guess this also counts as watching the full ad.
+AutoSkip for YouTube is a browser extension designed to enhance YouTube viewing experience by automatically skipping ads. I initially intended to use a script that clicked the "Skip ad" button when it appeared. It turns out that it's available in the HTML code from the start so it is possible to skip without waiting. When it detects an ad but fails to find the skip button, this happens with the unskippable ads, it will mute and speed it up so it is almost unnoticeable. I guess this also counts as watching the full ad.
 
 ## Supported browsers
 
@@ -14,7 +14,7 @@ All Chromium browsers (i.e. Chrome, Edge, Brave, Opera) will work the same way, 
 
 You have to build it from scratch or download the universal binary from [here](https://github.com/notarisj/YouTube-AutoSkip/releases/latest).
 
-If you want to build it, you must have Xcode and sign it with your developer certificate or allow unsigned extensions every time you close it. Run the following command:
+If you want to build it, you must have Xcode installed and sign it with your developer certificate or allow unsigned extensions every time you close it. Run the following command:
 
 ```bash
 xcrun safari-web-extension-converter /path/to/YouTube-AutoSkip/src --macos-only --app-name "YouTube AutoSkip"
@@ -43,7 +43,7 @@ After that, Xcode should open automatically. Build the app and copy it to  `Appl
 
 ## How it Works
 
-The extension uses a content script with a MutationObserver to dynamically observe elements such as the "Skip ad" button, as well as various ad formats like banners. When it detects the "Skip ad" button it  automatically triggers it. When the button is not available, with unskippable ads, it will verify that `ytp-ad-player-overlay` exists, mute the audio and set the playback rate to 10x.
+The extension uses a content script with a MutationObserver to dynamically observe elements such as the "Skip ad" button, as well as various ad formats like banners. When it detects the "Skip ad" button it automatically triggers it. When the button is not available, with unskippable ads, it will verify that `ytp-ad-player-overlay` exists, mute the audio and set the playback rate to 16x.
 
 ## Limitations
 
