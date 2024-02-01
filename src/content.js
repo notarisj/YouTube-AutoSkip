@@ -1,22 +1,95 @@
+let _debug = false;
+let _speedup;
+let _pushAdsToEnd;
+let _skipTo;
+
+chrome.storage.sync.get(['option1', 'option2'], function (result) {
+    setSpeedup(result.option1);
+    setPushAdsToEnd(result.option2);
+    if (_debug) {
+        console.log('Options retrieved from storage: ', result);
+    }
+});
+
+chrome.storage.sync.get('slider', function (result) {
+    setSkipTo(result.slider);
+    if (_debug) {
+        console.log('Slider value retrieved from storage: ', result.slider);
+    }
+});
+
+function setSpeedup(value) {
+    _speedup = value;
+    if (_debug) {
+        console.log('Speedup set to: ', _speedup);
+    }
+}
+
+function getSpeedup() {
+    return _speedup;
+}
+
+function setPushAdsToEnd(value) {
+    _pushAdsToEnd = value;
+    if (_debug) {
+        console.log('PushAdsToEnd set to: ', _pushAdsToEnd);
+    }
+}
+
+function getPushAdsToEnd() {
+    return _pushAdsToEnd;
+}
+
+function setSkipTo(value) {
+    _skipTo = value;
+    if (_debug) {
+        console.log('SkipTo set to: ', _skipTo);
+    }
+}
+
+function getSkipTo() {
+    return _skipTo;
+}
+
+
 function clickSkipButton() {
     var skipButton = document.querySelector('.ytp-ad-skip-button');
     var skipButtonModern = document.querySelector('.ytp-ad-skip-button-modern');
-    
+
     if (skipButton) {
         skipButton.click();
+        if (_debug) {
+            console.log('Skip button clicked.');
+        }
     } else if (skipButtonModern) {
         skipButtonModern.click();
+        if (_debug) {
+            console.log('Modern skip button clicked.');
+        }
     }
 }
 
 function skipUnskippableAd() {
     var adOverlay = document.querySelector('.ytp-ad-player-overlay');
     let videoPlayer = document.querySelector('video');
+
     if (videoPlayer && adOverlay) {
         videoPlayer.muted = true;
-        videoPlayer.playbackRate = 16;
+        if (getSpeedup()) {
+            videoPlayer.playbackRate = 16;
+            if (_debug) {
+                console.log('Speedup applied.');
+            }
+        }
+        if (getPushAdsToEnd()) {
+            videoPlayer.currentTime = videoPlayer.duration * (getSkipTo() / 100);
+            if (_debug) {
+                console.log('PushAdsToEnd applied. New video time: ', videoPlayer.currentTime);
+            }
+        }
     }
 }
+
 
 function removeBannerAds() {
     // Remove ad from the top row of Home. This is handled differently from the others because
@@ -27,6 +100,9 @@ function removeBannerAds() {
         var toBeRemoved = adElement.closest('ytd-rich-item-renderer');
         if (toBeRemoved) {
             toBeRemoved.remove();
+            if (_debug) {
+                console.log('Banner ad removed.');
+            }
         }
     }
 
@@ -54,6 +130,9 @@ function removeElement(selector) {
     var adElement = document.querySelector(selector);
     if (adElement) {
         adElement.remove();
+        if (_debug) {
+            console.log('Element removed: ', selector);
+        }
     }
 }
 
@@ -67,7 +146,12 @@ function removePopup(popupName, preferredButton) {
     var popupPromoRenderer = document.querySelector(popupName);
     if (popupPromoRenderer) {
         var dontRenewButton = mealbarPromoRenderer.querySelector(preferredButton);
-        if (dontRenewButton) dontRenewButton.click();
+        if (dontRenewButton) {
+            dontRenewButton.click();
+            if (_debug) {
+                console.log('Popup removed: ', popupName);
+            }
+        }
     }
 }
 
@@ -78,6 +162,31 @@ function warmUp() {
     removePromoPopups();
 }
 
+const handleAdSkip = (addedNode) => {
+    if (addedNode.classList.contains('ytp-ad-skip-button') ||
+        addedNode.classList.contains('ytp-ad-skip-button-modern') ||
+        addedNode.classList.contains('ytp-ad-player-overlay')) {
+        clickSkipButton();
+        skipUnskippableAd();
+    }
+};
+
+const handleBannerAds = (addedNode) => {
+    if (addedNode.classList.contains('ytd-ad-slot-renderer') ||
+        addedNode.classList.contains('ytd-banner-promo-renderer') ||
+        addedNode.classList.contains('ytd-player-legacy-desktop-watch-ads-renderer') ||
+        addedNode.classList.contains('ytd-action-companion-ad-renderer')) {
+        removeBannerAds();
+    }
+};
+
+const handlePromoPopups = (addedNode) => {
+    if (addedNode.classList.contains('yt-mealbar-promo-renderer') ||
+        addedNode.classList.contains('ytmusic-mealbar-promo-renderer')) {
+        removePromoPopups();
+    }
+};
+
 /**
  * @function handleMutations
  * @description Handles mutations in the DOM and triggers specific function based on the added nodes.
@@ -85,31 +194,6 @@ function warmUp() {
  * @param {MutationObserver} observer - The MutationObserver instance.
  */
 function handleMutations(mutationsList, observer) {
-    const handleAdSkip = (addedNode) => {
-        if (addedNode.classList.contains('ytp-ad-skip-button') ||
-            addedNode.classList.contains('ytp-ad-skip-button-modern') ||
-            addedNode.classList.contains('ytp-ad-player-overlay')) {
-            clickSkipButton();
-            skipUnskippableAd();
-        }
-    };
-
-    const handleBannerAds = (addedNode) => {
-        if (addedNode.classList.contains('ytd-ad-slot-renderer') ||
-            addedNode.classList.contains('ytd-banner-promo-renderer') ||
-            addedNode.classList.contains('ytd-player-legacy-desktop-watch-ads-renderer') ||
-            addedNode.classList.contains('ytd-action-companion-ad-renderer')) {
-            removeBannerAds();
-        }
-    };
-
-    const handlePromoPopups = (addedNode) => {
-        if (addedNode.classList.contains('yt-mealbar-promo-renderer') ||
-            addedNode.classList.contains('ytmusic-mealbar-promo-renderer')) {
-            removePromoPopups();
-        }
-    };
-
     for (const mutation of mutationsList) {
         if (mutation.type === 'childList') {
             mutation.addedNodes.forEach(addedNode => {
@@ -129,13 +213,34 @@ observer.observe(document.body, config);
 removeBannerAds();
 removePromoPopups();
 
-chrome.runtime.onMessage.addListener(function(request) {
+chrome.runtime.onMessage.addListener(function (request) {
     if (request.message === 'updateObserver') {
         if (request.isPaused) {
             observer.disconnect();
+            if (_debug) {
+                console.log('Observer disconnected.');
+            }
         } else {
             observer.observe(document.body, config);
             warmUp();
+            if (_debug) {
+                console.log('Observer reconnected.');
+            }
         }
+    }
+});
+
+// Options listeners
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.command === 'option1') {
+        setSpeedup(request.value);
+    } else if (request.command === 'option2') {
+        setPushAdsToEnd(request.value);
+    }
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if (request.command === 'slider') {
+        setSkipTo(request.value);
     }
 });

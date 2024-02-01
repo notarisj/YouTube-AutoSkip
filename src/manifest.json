@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "YouTube AutoSkip",
-  "version": "1.0",
-  "description": "A Chrome extension to automatically skip ads on YouTube.",
+  "version": "1.1",
+  "description": "A browser extension to automatically skip ads on YouTube.",
   "permissions": [
-    "scripting"
+    "scripting",
+    "storage"
   ],
   "host_permissions": [
     "*://*.youtube.com/*"

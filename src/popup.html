@@ -1,40 +1,153 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>YouTube AutoSkip</title>
-    <style>
-      body {
-        font-family: Arial, sans-serif;
-        background-color: #f8f9fa;
-        text-align: center;
-      }
 
-      .container {
-        background-color: white;
-        border-radius: 15px;
-        box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
-        padding: 30px;
-        max-width: 300px;
-        margin: auto;
-      }
+<head>
+  <title>YouTube AutoSkip</title>
+  <style>
+    * {
+      font-family: 'Roboto', sans-serif;
+      color: #333;
+      font-size: 10px;
+      /* margin-bottom: 5px; */
+    }
 
-      .pause-button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        background-color: #007bff;
-        color: white;
-        cursor: pointer;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <img src="icons/icon128.png" alt="YouTube AutoSkip Logo" class="logo">
-      <h1>YouTube AutoSkip</h1>
+    body {
+      background-color: #fafafa;
+      padding-bottom: 20px;
+      padding-right: 10px;
+      padding-left: 10px;
+      padding-top: 5px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-width: 190px;
+      /* max-height: 200px; */
+      margin: auto;
+    }
+
+    .logo {
+      max-width: 60px;
+    }
+
+    h1 {
+      font-size: 15px;
+      margin-bottom: -10px;
+    }
+
+    .button-4 {
+      appearance: none;
+      background-color: #FAFBFC;
+      border: 1px solid rgba(27, 31, 35, 0.15);
+      border-radius: 6px;
+      box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;
+      cursor: pointer;
+      display: inline-block;
+      font-weight: 500;
+      line-height: 20px;
+      padding: 2px 6px;
+      transition: background-color 0.2s cubic-bezier(0.3, 0, 0.5, 1);
+      user-select: none;
+      vertical-align: middle;
+      word-wrap: break-word;
+      margin-bottom: 6px;
+    }
+
+    .button-4:hover {
+      background-color: #F3F4F6;
+      transition-duration: 0.1s;
+    }
+
+    .button-4:disabled {
+      background-color: #FAFBFC;
+      border-color: rgba(27, 31, 35, 0.15);
+      color: #959DA5;
+      cursor: default;
+    }
+
+    .button-4:active {
+      background-color: #EDEFF2;
+      box-shadow: rgba(225, 228, 232, 0.2) 0 1px 0 inset;
+      transition: none 0s;
+    }
+
+    .button-4:focus {
+      outline: 1px transparent;
+    }
+
+    .button-container {
+      text-align: center;
+    }
+
+    .flex-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .info-button {
+      position: absolute;
+      right: 10px;
+      bottom: 10px;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- <img src="icons/icon48.png" alt="YouTube AutoSkip Logo" class="logo">
+  <h1 style="margin-top:-5px">YouTube AutoSkip</h1>
+  <p>Automatically skipping YouTube ads.</p> -->
+  <div class="flex-container">
+    <img src="icons/icon48.png" style="margin-right: 5px" alt="YouTube AutoSkip Logo" class="logo">
+    <div style="margin-top: 14px">
+      <h1 style="margin-top:-5px">YouTube AutoSkip</h1>
       <p>Automatically skipping YouTube ads.</p>
-      <button id="pauseButton" class="pause-button">Pause</button>
     </div>
-    <script src="popup.js"></script>
-  </body>
+  </div>
+  <div>
+    <div>
+      <label>
+        <input type="checkbox" id="option1" style="margin-bottom: 4px; margin-top:10px"> Speed up ads
+      </label>
+    </div>
+    <div>
+      <label>
+        <input type="checkbox" id="option2" style="margin-bottom: 4px"> Push ads to the end
+      </label>
+    </div>
+    <div>
+      <div class="flex-container">
+        <label for="slider">Skip to:</label>
+        <input type="range" id="slider" min="1" max="100" value="90">
+        <span id="sliderValue">90</span>
+        <label for="sliderValue">%</label>
+      </div>
+    </div>
+    <div class="button-container">
+      <button id="pauseButton" class="button-4" role="button" style="margin-bottom: -10px">Pause</button>
+    </div>
+  </div>
+  <!-- Info Button -->
+  <button type="button" class="info-button" id="infoButton">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-info-circle"
+      viewBox="0 0 16 16">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+      <path
+        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+    </svg>
+  </button>
+
+  <!-- Info Modal -->
+  <div id="infoModal"
+    style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.5);">
+    <div style="background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 80%;">
+      <h2>Information</h2>
+      <p>Ads might reset if skipped more that 90%</p>
+      <button id="closeModal">Close</button>
+    </div>
+  </div>
+  <script src="popup.js"></script>
+</body>
 </html>

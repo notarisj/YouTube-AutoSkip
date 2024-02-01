@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="src/icons/icon48.png" alt="YouTube AutoSkip"/>
+</p>
+
 # AutoSkip for YouTube (Browser Extension) 
 
 ## Description
