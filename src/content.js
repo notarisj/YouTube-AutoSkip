@@ -53,20 +53,24 @@ function getSkipTo() {
 
 
 function clickSkipButton() {
-    var skipButton = document.querySelector('.ytp-ad-skip-button');
-    var skipButtonModern = document.querySelector('.ytp-ad-skip-button-modern');
-
-    if (skipButton) {
-        skipButton.click();
-        if (_debug) {
-            console.log('Skip button clicked.');
-        }
-    } else if (skipButtonModern) {
-        skipButtonModern.click();
-        if (_debug) {
-            console.log('Modern skip button clicked.');
-        }
-    }
+    const skipButtons = document.querySelectorAll('[id^="skip-button:"]');
+    
+    skipButtons.forEach(skipButton => {
+        const rect = skipButton.getBoundingClientRect();
+        
+        const x = rect.left + window.pageXOffset + (rect.width / 2);
+        const y = rect.top + window.pageYOffset + (rect.height / 2);
+        
+        const event = new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: true,
+            clientX: x,
+            clientY: y
+        });
+        
+        skipButton.dispatchEvent(event);
+    });
 }
 
 function skipUnskippableAd() {
