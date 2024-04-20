@@ -163,28 +163,18 @@ function warmUp() {
 }
 
 const handleAdSkip = (addedNode) => {
-    if (addedNode.classList.contains('ytp-ad-skip-button') ||
-        addedNode.classList.contains('ytp-ad-skip-button-modern') ||
-        addedNode.matches('[class^="ytp-ad-player-overlay"]')) {
+    if (addedNode.matches('[class^="ytp-ad-player-overlay"]')) {
         clickSkipButton();
         skipUnskippableAd();
     }
 };
 
 const handleBannerAds = (addedNode) => {
-    if (addedNode.classList.contains('ytd-ad-slot-renderer') ||
-        addedNode.classList.contains('ytd-banner-promo-renderer') ||
-        addedNode.classList.contains('ytd-player-legacy-desktop-watch-ads-renderer') ||
-        addedNode.classList.contains('ytd-action-companion-ad-renderer')) {
-        removeBannerAds();
-    }
+    removeBannerAds();
 };
 
 const handlePromoPopups = (addedNode) => {
-    if (addedNode.classList.contains('yt-mealbar-promo-renderer') ||
-        addedNode.classList.contains('ytmusic-mealbar-promo-renderer')) {
-        removePromoPopups();
-    }
+    removePromoPopups();
 };
 
 /**
@@ -198,9 +188,21 @@ function handleMutations(mutationsList, observer) {
         if (mutation.type === 'childList') {
             mutation.addedNodes.forEach(addedNode => {
                 if (addedNode.nodeType === 1) { // Check if it's an element node
-                    handleAdSkip(addedNode);
-                    handleBannerAds(addedNode);
-                    handlePromoPopups(addedNode);
+                    if (addedNode.classList.contains('ytp-ad-skip-button') ||
+                        addedNode.classList.contains('ytp-ad-skip-button-modern') ||
+                        addedNode.matches('[class^="ytp-ad-player-overlay"]')) {
+                        handleAdSkip(addedNode);
+                    }
+                    if (addedNode.classList.contains('ytd-ad-slot-renderer') ||
+                        addedNode.classList.contains('ytd-banner-promo-renderer') ||
+                        addedNode.classList.contains('ytd-player-legacy-desktop-watch-ads-renderer') ||
+                        addedNode.classList.contains('ytd-action-companion-ad-renderer')) {
+                        handleBannerAds(addedNode);
+                    }
+                    if (addedNode.classList.contains('yt-mealbar-promo-renderer') ||
+                        addedNode.classList.contains('ytmusic-mealbar-promo-renderer')) {
+                        handlePromoPopups(addedNode);
+                    }
                 }
             });
         }
