@@ -70,11 +70,10 @@ function clickSkipButton() {
 }
 
 function skipUnskippableAd() {
-    var adOverlay = document.querySelector('.ytp-ad-player-overlay');
-    var adOverlayLayout = document.querySelector('.ytp-ad-player-overlay-layout');
+    var adOverlay = document.querySelector('[class^="ytp-ad-player-overlay"]');
     let videoPlayer = document.querySelector('video');
     
-    if (videoPlayer && (adOverlay || adOverlayLayout)) {
+    if (videoPlayer && adOverlay) {
         videoPlayer.muted = true;
         if (getSpeedup()) {
             videoPlayer.playbackRate = 16;
@@ -166,8 +165,7 @@ function warmUp() {
 const handleAdSkip = (addedNode) => {
     if (addedNode.classList.contains('ytp-ad-skip-button') ||
         addedNode.classList.contains('ytp-ad-skip-button-modern') ||
-        addedNode.classList.contains('ytp-ad-player-overlay') ||
-        addedNode.classList.contains('ytp-ad-player-overlay-layout')) {
+        addedNode.matches('[class^="ytp-ad-player-overlay"]')) {
         clickSkipButton();
         skipUnskippableAd();
     }
