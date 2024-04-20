@@ -1,6 +1,16 @@
 let isPaused = false;
 let _debug = false;
 
+// Used to send the initial state to content.js to initialise the observer
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    if (changeInfo.status === 'complete' && tab.active) {
+        chrome.tabs.sendMessage(tabId, {
+            message: "initialState",
+            isPaused: isPaused,
+        });
+    }
+});
+
 // Function to send a message to content.js to update the observer state
 function sendUpdateObserverMessage() {
     // Send message to content.js to update observer

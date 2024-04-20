@@ -211,9 +211,6 @@ function handleMutations(mutationsList, observer) {
 
 const config = { childList: true, subtree: true };
 let observer = new MutationObserver(handleMutations);
-observer.observe(document.body, config);
-removeBannerAds();
-removePromoPopups();
 
 chrome.runtime.onMessage.addListener(function (request) {
     if (request.message === 'updateObserver') {
@@ -224,10 +221,17 @@ chrome.runtime.onMessage.addListener(function (request) {
             }
         } else {
             observer.observe(document.body, config);
-            warmUp();
             if (_debug) {
                 console.log('Observer reconnected.');
             }
+        }
+    } else if (request.message === 'initialState') {
+        if (_debug) {
+            console.log('Initial state (isPaused): ' + request.isPaused);
+        }
+        if (!request.isPaused) {
+            observer.observe(document.body, config);
+            warmUp();
         }
     }
 });
