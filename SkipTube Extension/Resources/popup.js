@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// Event listener for pauseButton click
-document.getElementById('pauseButton').addEventListener('click', function () {
+// Event listener for pause-resume click
+document.getElementById('pause-resume').addEventListener('click', function () {
     chrome.runtime.sendMessage({
         message: "toggleState"
     }, function (response) {
@@ -32,9 +32,9 @@ document.getElementById('pauseButton').addEventListener('click', function () {
  */
 function updateButtonLabel(isPaused) {
     if (isPaused) {
-        document.getElementById('pauseButton').textContent = "Resume";
+        document.getElementById('pause-resume').textContent = "Resume";
     } else {
-        document.getElementById('pauseButton').textContent = "Pause";
+        document.getElementById('pause-resume').textContent = "Pause";
     }
     if (_debug) {
         console.log('Button label updated: ', isPaused ? 'Resume' : 'Pause');
@@ -69,7 +69,7 @@ document.getElementById('option2').addEventListener('change', function () {
 // Event listener for slider
 document.getElementById('slider').addEventListener('input', function () {
     var sliderValue = this.value;
-    document.getElementById('sliderValue').textContent = sliderValue;
+    document.getElementById('slider-value').textContent = sliderValue + '%';
     chrome.storage.sync.set({ slider: sliderValue });
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         chrome.tabs.sendMessage(tabs[0].id, { command: 'slider', value: sliderValue });
@@ -90,26 +90,11 @@ chrome.storage.sync.get(['option1', 'option2'], function (result) {
 
 chrome.storage.sync.get('slider', function (result) {
     document.getElementById('slider').value = result.slider || 90;
-    document.getElementById('sliderValue').textContent = result.slider || 90;
+    document.getElementById('slider-value').textContent = (result.slider || 90) + '%';
     if (_debug) {
         console.log('Slider value restored from storage: ', result.slider);
     }
 });
-
-// Info modal
-document.getElementById('infoButton').onclick = function () {
-    document.getElementById('infoModal').style.display = 'block';
-    if (_debug) {
-        console.log('Info modal opened.');
-    }
-}
-
-document.getElementById('closeModal').onclick = function () {
-    document.getElementById('infoModal').style.display = 'none';
-    if (_debug) {
-        console.log('Info modal closed.');
-    }
-}
 
 // Message listener for updating UI
 chrome.runtime.onMessage.addListener(function (request, _, sendResponse) {

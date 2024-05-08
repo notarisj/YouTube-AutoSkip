@@ -1,0 +1,57 @@
+:root {
+    color-scheme: light dark;
+}
+
+body {
+    width: 180px;
+    padding: 10px;
+
+    font-family: system-ui;
+    text-align: center;
+}
+
+@media (prefers-color-scheme: dark) {
+    /* Dark Mode styles go here. */
+}
+
+#extension-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    gap: 10px;
+}
+
+#extension-info h1 {
+    font-size: 12pt;
+}
+
+#extension-info img {
+    width: 48px;
+    height: 48px;
+}
+
+#options {
+    text-align: left;
+    margin-bottom: 5px;
+}
+
+#options label {
+    display: block;
+    margin: 10px 0;
+    font-size: 10pt;
+}
+
+#slider-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#slider {
+    width: 75%;
+}
+
+#slider-value {
+    font-size: 10pt;
+}
