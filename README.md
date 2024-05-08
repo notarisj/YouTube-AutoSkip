@@ -1,8 +1,10 @@
 <p align="center">
-  <img src="src/icons/icon48.png" alt="YouTube AutoSkip"/>
+  <img src="Sketch Assets/logo.png" alt="YouTube AutoSkip"/>
 </p>
 
 # AutoSkip for YouTube (Browser Extension) 
+
+[![Download on App Store](https://developer.apple.com/app-store/marketing/guidelines/images/badge-download-on-the-app-store.svg)](https://apps.apple.com/app/skiptube/id6502307277)
 
 ## Description
 
