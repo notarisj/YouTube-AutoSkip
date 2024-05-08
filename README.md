@@ -44,7 +44,7 @@ After that, Xcode should open automatically. Build the app and copy it to  `Appl
 2. Extract the files (if you downloaded a ZIP).
 3. Open Google Chrome and navigate to chrome://extensions/.
 4. Enable 'Developer Mode'.
-5. Click on 'Load Unpacked' and select the `src` folder.
+5. Click on 'Load Unpacked' and select the `SkipTube Extension/resources` folder.
 6. Enjoy ad-free YouTube viewing!
 
 ## How it Works
