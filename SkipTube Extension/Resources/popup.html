@@ -1,27 +1,25 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="popup.css">
-    <script type="module" src="popup.js"></script>
-</head>
-
-<body>
-    <div id="extension-info">
-        <img src="images/icon-48.png" srcset="images/icon-96.png 2x, images/icon-128.png 3x" alt="SkipTube Icon">
-        <h1>SkipTube</h1>
-    </div>
-    <div id="options">
-        <label><input type="checkbox" id="option1"> Speedup ads</label>
-        <label><input type="checkbox" id="option2"> Push ads to the end</label>
-        <label for="slider">Skip to:</label>
-        <div id="slider-container">
-            <input id="slider" type="range" min="1" max="100" value="90">
-            <span id="slider-value"></span>
+    <head>
+        <meta charset="UTF-8">
+        <link rel="stylesheet" href="popup.css">
+        <script type="module" src="popup.js"></script>
+    </head>
+    <body>
+        <div id="extension-info">
+            <img src="images/icon-48.png" srcset="images/icon-96.png 2x, images/icon-128.png 3x" alt="SkipTube Icon">
+            <h1>SkipTube</h1>
         </div>
-    </div>
-    <button id="pause-resume">Pause</button>
-</body>
-
+        <div id="options">
+            <label><input type="checkbox" id="option1"> Speedup ads</label>
+            <label><input type="checkbox" id="option2"> Push ads to the end</label>
+            <label for="slider">Skip to:</label>
+            <div id="slider-container">
+                <input id="slider" type="range" min="1" max="100" value="90">
+                <span id="slider-value"></span>
+            </div>
+            <p id="slider-warning" style="display: none;">Warning: High values might cause issues.</p>
+        </div>
+        <button id="pause-resume">Pause</button>
+    </body>
 </html>

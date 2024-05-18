@@ -55,3 +55,8 @@ body {
 #slider-value {
     font-size: 10pt;
 }
+
+#slider-warning {
+  color: red;
+  font-size: 9pt; /* Smaller font size */
+}
