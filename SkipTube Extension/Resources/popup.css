@@ -5,7 +5,7 @@
 body {
     width: 180px;
     padding: 10px;
-
+    
     font-family: system-ui;
     text-align: center;
 }
@@ -57,6 +57,6 @@ body {
 }
 
 #slider-warning {
-  color: red;
-  font-size: 9pt; /* Smaller font size */
+    color: red;
+    font-size: 9pt; /* Smaller font size */
 }
