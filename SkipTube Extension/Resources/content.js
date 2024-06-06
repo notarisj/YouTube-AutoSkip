@@ -1,8 +1,9 @@
-let _debug = false;
+let _debug = true;
 let _speedup = false;
 let _pushAdsToEnd = false;
 let _skipTo = 0;
 let _isPaused = false;
+let _lastUrl = null;
 
 // Load settings. TODO: (can be optimized with Promise.all)
 chrome.storage.sync.get(['option1', 'option2', 'slider', 'isPaused'], function (result) {
@@ -19,34 +20,68 @@ chrome.storage.sync.get(['option1', 'option2', 'slider', 'isPaused'], function (
     }
 });
 
-// Core Functions
-function skipAd() {
-    const skipButton = document.querySelector('.ytp-ad-skip-button, .ytp-ad-skip-button-modern');
-    if (skipButton) {
-        if (_debug) console.log('Skippable ad detected. Clicking skip button...');
-        skipButton.click();
-    }
-    else {
-        if (_debug) console.log('Unskippable ad detected. Trying to skip...');
-        skipUnskippableAd(); // Handle unskippable ads
+function replaceYouTubePlayer() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const videoId = urlParams.get('v');
+    
+    if (videoId && !_isPaused) {
+        const embedCode = `
+          <iframe id="custom-embed" src="https://cdpn.io/pen/debug/oNPzxKo?v=${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen">
+            <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">https://www.youtube.com/watch?v=${videoId}</a>
+          </iframe>
+        `;
+        
+        const ytdPlayer = document.getElementById('ytd-player');
+        if (ytdPlayer) {
+            const ytdChild = ytdPlayer.children[0];
+            ytdChild.style.display = 'none';
+            
+            if (ytdPlayer.children.length > 1) {
+                const secondChild = ytdPlayer.children[1];
+                ytdPlayer.removeChild(secondChild);
+            }
+            
+            const embedDiv = document.createElement('div');
+            embedDiv.innerHTML = embedCode;
+            ytdPlayer.appendChild(embedDiv);
+        }
+    } else {
+        const embedVid = document.getElementById('movie_player');
+        if (embedVid) embedVid.pauseVideo();
     }
 }
 
-function skipUnskippableAd() {
-    const videoPlayer = document.querySelector('video');
-    const adOverlay = document.querySelector('[class^="ytp-ad-player-overlay"]');
-    if (videoPlayer && adOverlay) {
-        videoPlayer.muted = true;
-        if (_speedup) {
-            videoPlayer.playbackRate = 16;
-            if (_debug) console.log('Speedup applied to unskippable ad.');
-        }
-        if (_pushAdsToEnd) {
-            videoPlayer.currentTime = videoPlayer.duration * (_skipTo / 100);
-            if (_debug) console.log('Pushing unskippable ad to', _skipTo, '%');
-        }
+function pauseDefaultPlayer() {
+    if (_isPaused) return;
+    var videoElement = document.querySelector('.video-stream.html5-main-video');
+    if (videoElement && !videoElement.paused) {
+        videoElement.pause();
     }
 }
+
+function adjustSize() {
+    if (_isPaused) return;
+    const player = document.getElementById('player');
+    const customEmbed = document.getElementById('custom-embed');
+    
+    if (player && customEmbed) {
+        customEmbed.width = player.offsetWidth;
+        customEmbed.height = player.offsetHeight;
+    }
+}
+
+function checkUrlChange() {
+    if (_isPaused) return;
+    const currentUrl = window.location.href;
+    if (currentUrl !== _lastUrl || _lastUrl === null) {
+        _lastUrl = currentUrl;
+        replaceYouTubePlayer();
+    }
+}
+
+setInterval(checkUrlChange, 1000);
+setInterval(pauseDefaultPlayer, 1000);
+setInterval(adjustSize, 1000);
 
 function removeAds() {
     const adSelectors = [
@@ -92,7 +127,6 @@ function removePromoPopups() {
 
 function warmUp() {
     if (_debug) console.log('Running warm-up functions...');
-    skipAd();
     removeAds();
     removePromoPopups();
 }
@@ -107,14 +141,12 @@ function handleMutations(mutationsList, observer) {
     for (const mutation of mutationsList) {
         for (const node of mutation.addedNodes) {
             if (node.nodeType === 1) { // Ensure it's an element
-                if (node.matches('[class^="ytp-ad-player-overlay"]')) skipAd();
-                else if (node.matches('[class*="ad-slot-renderer"], [class*="banner-promo-renderer"]')) removeAds();
+                if (node.matches('[class*="ad-slot-renderer"], [class*="banner-promo-renderer"]')) removeAds();
                 else if (node.matches('.yt-mealbar-promo-renderer, .ytmusic-mealbar-promo-renderer')) removePromoPopups();
             }
         }
     }
 }
-
 
 // Observer Setup and Message Handling
 function startObserver() {
@@ -127,11 +159,6 @@ chrome.runtime.onMessage.addListener(function (request) {
     if (_debug) console.log('Received message:', request);
     
     if (request.message === 'updateObserver') {
-        _isPaused = request.isPaused;
-        _isPaused ? observer.disconnect() : startObserver(); // Toggle observer
-    } else if (request.command.startsWith('option')) {
-        // Handle option updates (speedup, pushAdsToEnd, skipTo)
-        const optionName = request.command.replace('option', '');
-        window['_' + optionName] = request.value;
+        window.location.reload();
     }
 });

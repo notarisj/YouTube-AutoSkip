@@ -30,33 +30,3 @@ body {
     width: 48px;
     height: 48px;
 }
-
-#options {
-    text-align: left;
-    margin-bottom: 5px;
-}
-
-#options label {
-    display: block;
-    margin: 10px 0;
-    font-size: 10pt;
-}
-
-#slider-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-#slider {
-    width: 75%;
-}
-
-#slider-value {
-    font-size: 10pt;
-}
-
-#slider-warning {
-    color: red;
-    font-size: 9pt; /* Smaller font size */
-}
