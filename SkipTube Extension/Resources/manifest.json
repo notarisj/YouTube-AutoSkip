@@ -20,7 +20,7 @@
     
     "content_scripts": [{
         "js": [ "content.js" ],
-        "matches": [ "*://youtube.com/*" ]
+        "matches": [ "*://*.youtube.com/*" ]
     }],
     
     "action": {
@@ -41,6 +41,6 @@
     ],
     
     "host_permissions": [
-        "*://youtube.com/*"
+        "*://*.youtube.com/*"
     ]
 }
