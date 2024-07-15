@@ -51,6 +51,10 @@ After that, Xcode should open automatically. Build the app and copy it to  `Appl
 
 The extension uses a content script with a MutationObserver to dynamically observe elements such as the "Skip ad" button, as well as various ad formats like banners. When it detects the "Skip ad" button it automatically triggers it. When the button is not available, with unskippable ads, it will verify that `ytp-ad-player-overlay` exists, mute the audio and set the playback rate to 16x.
 
+## Troubleshooting
+
+1. Make sure the extension icon lights up blue when visiting YouTube. If not go in Safari settings -> Websites -> SkipTube and select allow in the dropdown next to youtube.com
+
 ## Limitations
 
 * ~~Unskippable Ads: The extension cannot skip ads that do not have the "Skip Ad" option.~~
