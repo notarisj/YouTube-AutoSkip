@@ -3,7 +3,6 @@
 }
 
 body {
-    width: 180px;
     padding: 10px;
     
     font-family: system-ui;
@@ -29,4 +28,21 @@ body {
 #extension-info img {
     width: 48px;
     height: 48px;
+}
+
+hr.full-width {
+    width: calc(100% + 10px);
+    margin-left: -5px;
+    margin-right: -5px;
+    border: 1px solid;
+    opacity: 0.3;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
 }

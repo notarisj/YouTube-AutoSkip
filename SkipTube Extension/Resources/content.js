@@ -3,14 +3,13 @@ let _speedup = false;
 let _pushAdsToEnd = false;
 let _skipTo = 0;
 let _isPaused = false;
+let _autoplay = false;
 let _lastUrl = null;
 
 // Load settings. TODO: (can be optimized with Promise.all)
-chrome.storage.sync.get(['option1', 'option2', 'slider', 'isPaused'], function (result) {
-    _speedup = result.option1 || false;
-    _pushAdsToEnd = result.option2 || false;
-    _skipTo = result.slider || 0;
+chrome.storage.sync.get(['isPaused', 'autoplay'], function (result) {
     _isPaused = result.isPaused || false;
+    _autoplay = result.autoplay || false;
     
     if (_debug) console.log('Settings loaded:', result);
     
@@ -26,7 +25,7 @@ function replaceYouTubePlayer() {
     
     if (videoId && !_isPaused) {
         const embedCode = `
-          <iframe id="custom-embed" src="https://cdpn.io/pen/debug/oNPzxKo?v=${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen">
+          <iframe id="custom-embed" src="https://cdpn.io/pen/debug/oNPzxKo?v=${videoId}${_autoplay ? '&autoplay=1' : ''}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen">
             <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">https://www.youtube.com/watch?v=${videoId}</a>
           </iframe>
         `;
@@ -160,5 +159,8 @@ chrome.runtime.onMessage.addListener(function (request) {
     
     if (request.message === 'updateObserver') {
         window.location.reload();
+    } else if (request.message === 'updateAutoplay') {
+        _autoplay = request.autoplay;
+        replaceYouTubePlayer();
     }
 });
