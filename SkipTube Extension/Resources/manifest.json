@@ -4,7 +4,7 @@
     
     "name": "SkipTube",
     "description": "A browser extension to automatically skip ads on YouTube.",
-    "version": "2.0",
+    "version": "2.1",
     
     "icons": {
         "48": "images/icon-48.png",

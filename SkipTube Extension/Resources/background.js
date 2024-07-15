@@ -1,6 +1,6 @@
 let isPaused = false;
 let autoplay = true;
-let _debug = true;
+let _debug = false;
 
 // Initialize extension state
 chrome.runtime.onInstalled.addListener(() => {

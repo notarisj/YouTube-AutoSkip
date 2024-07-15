@@ -1,4 +1,4 @@
-let _debug = true;
+let _debug = false;
 let _speedup = false;
 let _pushAdsToEnd = false;
 let _skipTo = 0;
