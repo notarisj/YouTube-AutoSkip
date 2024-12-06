@@ -89,29 +89,41 @@ function removeAds() {
         'ytd-player-legacy-desktop-watch-ads-renderer',
         'ytd-action-companion-ad-renderer'
     ];
+    
     for (const selector of adSelectors) {
         const adElements = document.querySelectorAll(selector);
         if (_debug) console.log('Found', adElements.length, 'ads matching', selector);
+        
         adElements.forEach(el => {
             // Find the specific parent ytd-rich-item-renderer within ytd-rich-grid-renderer
-            const parent = el.closest('ytd-rich-item-renderer.style-scope.ytd-rich-grid-renderer');
-            if (parent) {
-                if (_debug) console.log('Removing parent ytd-rich-item-renderer:', parent);
-                parent.remove();
-            } else {
-                // If no parent ytd-rich-item-renderer, remove the element itself
-                if (_debug) console.log('Removing ad:', el);
-                el.remove();
+            const richParent = el.closest('ytd-rich-item-renderer.style-scope.ytd-rich-grid-renderer');
+            if (richParent) {
+                if (_debug) console.log('Removing parent ytd-rich-item-renderer:', richParent);
+                richParent.remove();
+                return; // Skip further processing for this element
             }
+            
+            // Find the parent ytd-reel-video-renderer
+            const reelParent = el.closest('ytd-reel-video-renderer');
+            if (reelParent) {
+                if (_debug) console.log('Removing parent ytd-reel-video-renderer:', reelParent);
+                reelParent.style.display = 'none';
+                return; // Skip further processing for this element
+            }
+            
+            // If no specific parent found, remove the ad element itself
+            if (_debug) console.log('Removing ad:', el);
+            el.remove();
         });
     }
 
     // Special case for top-row home ad
     const topAd = document.querySelector('ytd-ad-slot-renderer');
     if (topAd) {
-        const topAdParent = topAd.closest('ytd-rich-item-renderer.style-scope.ytd-rich-grid-renderer');
+        const topAdParent = topAd.closest('ytd-reel-video-renderer') || 
+                            topAd.closest('ytd-rich-item-renderer.style-scope.ytd-rich-grid-renderer');
         if (topAdParent) {
-            if (_debug) console.log('Removing top-row ad parent ytd-rich-item-renderer:', topAdParent);
+            if (_debug) console.log('Removing top-row ad parent:', topAdParent);
             topAdParent.remove();
         } else {
             if (_debug) console.log('Removing top-row ad directly:', topAd);
