@@ -219,3 +219,63 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
+function addNextButtonNextToTitle() {
+    // Find the title element
+    const titleElement = document.querySelector("#title h1.style-scope.ytd-watch-metadata");
+    
+    if (!titleElement) {
+        if (_debug) console.log("Title element not found!");
+        return;
+    }
+
+    // Check if the button already exists
+    const existingButton = document.querySelector("#custom-next-button");
+    if (existingButton) {
+        if (_debug) console.log("Next button already exists!");
+        return;
+    }
+
+    // Create the new button
+    const nextButton = document.createElement('button');
+    nextButton.id = "custom-next-button"; // Add an ID to identify it easily
+    nextButton.textContent = "Next";
+    nextButton.style.marginLeft = "10px"; // Space between title and button
+    nextButton.style.cursor = "pointer";
+    nextButton.style.padding = "5px 10px";
+    nextButton.style.border = "none";
+    nextButton.style.backgroundColor = "#cc0000";
+    nextButton.style.color = "#fff";
+    nextButton.style.borderRadius = "4px";
+    nextButton.style.fontSize = "14px";
+    nextButton.style.alignSelf = "center"; // Ensure proper alignment with the title
+
+    // Add click event to invoke the next video action
+    const originalNextButton = document.querySelector('.ytp-next-button.ytp-button');
+    if (originalNextButton) {
+        nextButton.addEventListener('click', () => {
+            originalNextButton.click();
+        });
+    } else {
+        if (_debug) console.log("Original 'Next' button not found!");
+    }
+
+    // Insert the button next to the title
+    const parentContainer = titleElement.parentNode;
+    if (parentContainer) {
+        parentContainer.style.display = "flex"; // Ensure parent container uses flexbox for alignment
+        parentContainer.style.alignItems = "center"; // Align items vertically
+        parentContainer.insertBefore(nextButton, titleElement.nextSibling); // Add button directly after title
+    } else {
+        if (_debug) console.log("Title's parent container not found!");
+    }
+}
+
+// Check for the title element at regular intervals
+const intervalId = setInterval(() => {
+    addNextButtonNextToTitle();
+
+    // Stop checking once the button is added
+    if (document.querySelector("#custom-next-button")) {
+        clearInterval(intervalId);
+    }
+}, 1000);
