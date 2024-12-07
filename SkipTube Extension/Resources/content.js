@@ -141,6 +141,13 @@ function removeAds() {
             topAd.remove();
         }
     }
+
+    // REMOVE THE ENGAGEMENT PANEL ADS SECTION
+    const adsEngagementPanel = document.querySelector('ytd-engagement-panel-section-list-renderer[target-id="engagement-panel-ads"]');
+    if (adsEngagementPanel) {
+        if (_debug) console.log('Removing ytd-engagement-panel-section-list-renderer with target-id="engagement-panel-ads":', adsEngagementPanel);
+        adsEngagementPanel.remove();
+    }
 }
 
 function removePromoPopups() {
