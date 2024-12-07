@@ -1,6 +1,7 @@
 let isPaused = false;
 let autoplay = true;
 let _debug = false;
+let playerVisible = true; // In-memory state only
 
 // Initialize extension state
 chrome.runtime.onInstalled.addListener(() => {
@@ -21,17 +22,18 @@ chrome.runtime.onMessage.addListener((request, _, sendResponse) => {
     } else if (request.message === "updateAutoplay") {
         sendUpdateAutoplayMessage(request.autoplay);
         chrome.storage.sync.set({autoplay: request.autoplay});
+    } else if (request.message === "togglePlayerVisibility") {
+        playerVisible = !playerVisible;
+        sendUpdatePlayerVisibilityMessage(playerVisible);
+        sendResponse({visible: playerVisible});
     }
 });
 
-// Send state updates to all relevant tabs
 function sendUpdateObserverMessage() {
     chrome.tabs.query({url: "*://*.youtube.com/*"}, tabs => {
         tabs.forEach(tab => {
             chrome.tabs.sendMessage(tab.id, {message: "updateObserver", isPaused: isPaused});
-            if (_debug) {
-                console.log('Message sent to content script in tab:', tab.id);
-            }
+            if (_debug) console.log('Message sent to tab:', tab.id);
         });
     });
 }
@@ -42,28 +44,32 @@ function sendUpdateAutoplayMessage(_autoplay) {
             const tab = tabs[0];
             const message = {message: "updateAutoplay", autoplay: _autoplay};
             chrome.tabs.sendMessage(tab.id, message);
-            if (_debug) {
-                console.log('Message sent to content script in tab:', tab.id);
-            }
+            if (_debug) console.log('Autoplay message sent to tab:', tab.id);
         }
     });
 }
 
-chrome.runtime.onStartup.addListener(function () {
-    chrome.storage.sync.get(['isPaused', 'autoplay'], function (data) {
+function sendUpdatePlayerVisibilityMessage(isVisible) {
+    chrome.tabs.query({url: "*://*.youtube.com/*"}, tabs => {
+        tabs.forEach(tab => {
+            const message = {message: "toggleEmbed", visible: isVisible};
+            chrome.tabs.sendMessage(tab.id, message);
+            if (_debug) console.log('Player visibility message sent to tab:', tab.id);
+        });
+    });
+}
+
+chrome.runtime.onStartup.addListener(() => {
+    // Restore only paused/autoplay states
+    chrome.storage.sync.get(['isPaused', 'autoplay'], (data) => {
         if (data.isPaused !== undefined) {
             isPaused = data.isPaused;
             sendUpdateObserverMessage();
-            if (_debug) {
-                console.log('State restored from storage: ', isPaused);
-            }
+            if (_debug) console.log('State restored:', isPaused);
         }
         if (data.autoplay !== undefined) {
-            autoplay = data.autoplay; // Update the global autoplay variable
-            // Optionally, send an update message if needed
-            if (_debug) {
-                console.log('Autoplay state restored from storage: ', autoplay);
-            }
+            autoplay = data.autoplay;
+            if (_debug) console.log('Autoplay state restored:', autoplay);
         }
     });
 });

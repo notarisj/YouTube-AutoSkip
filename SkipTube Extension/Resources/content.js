@@ -5,6 +5,7 @@ let _skipTo = 0;
 let _isPaused = false;
 let _autoplay = false;
 let _lastUrl = null;
+let _playerVisible = true; // Default true since we don't store it
 
 // Load settings. TODO: (can be optimized with Promise.all)
 chrome.storage.sync.get(['isPaused', 'autoplay'], function (result) {
@@ -17,7 +18,17 @@ chrome.storage.sync.get(['isPaused', 'autoplay'], function (result) {
         startObserver();
         warmUp(); // Run initial cleanup
     }
+    updateEmbedVisibility();
 });
+
+function updateEmbedVisibility() {
+    const customEmbed = document.getElementById('custom-embed');
+    const ytdPlayer = document.getElementById('ytd-player');
+    if (customEmbed && ytdPlayer) {
+        customEmbed.style.display = _playerVisible ? 'block' : 'none';
+        ytdPlayer.children[0].style.display = _playerVisible ? 'none' : 'block';
+    }
+}
 
 function replaceYouTubePlayer() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -51,7 +62,7 @@ function replaceYouTubePlayer() {
 }
 
 function pauseDefaultPlayer() {
-    if (_isPaused) return;
+    if (_isPaused || !_playerVisible) return;
     var videoElement = document.querySelector('.video-stream.html5-main-video');
     if (videoElement && !videoElement.paused) {
         videoElement.pause();
@@ -185,5 +196,8 @@ chrome.runtime.onMessage.addListener(function (request) {
     } else if (request.message === 'updateAutoplay') {
         _autoplay = request.autoplay;
         replaceYouTubePlayer();
+    } else if (request.message === 'toggleEmbed') {
+        _playerVisible = request.visible;
+        updateEmbedVisibility();
     }
 });
