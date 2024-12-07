@@ -208,3 +208,14 @@ chrome.runtime.onMessage.addListener(function (request) {
         updateEmbedVisibility();
     }
 });
+
+// Shortcut key listener
+document.addEventListener('keydown', function (event) {
+    // Shortcut: Ctrl + B
+    if (event.ctrlKey && event.code === 'KeyB') {
+        _playerVisible = !_playerVisible; // Toggle visibility
+        updateEmbedVisibility(); // Apply the change
+        if (_debug) console.log(`Player visibility toggled: ${_playerVisible}`);
+    }
+});
+
