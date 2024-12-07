@@ -1,48 +1,139 @@
 :root {
     color-scheme: light dark;
+
+    /* Define a simple color palette */
+    --background-color: #f9f9f9;
+    --foreground-color: #333;
+    --border-color: #ccc;
+    --card-background: #fff;
+    --primary-color: #4285f4;
+    --secondary-color: #5f6368;
+
+    /* Font settings */
+    --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 body {
-    padding: 10px;
-    
-    font-family: system-ui;
+    margin: 0;
+    /* padding: 20px; */
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--foreground-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
     text-align: center;
 }
 
-@media (prefers-color-scheme: dark) {
-    /* Dark Mode styles go here. */
+.card {
+    background: var(--card-background);
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    width: 200px;
 }
 
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #1e1e1e;
+        color: #ddd;
+    }
+    .card {
+        background: #2b2b2b;
+        box-shadow: none;
+    }
+    hr.full-width {
+        border-color: #444;
+    }
+    .primary-btn, .secondary-btn {
+        box-shadow: none;
+    }
+}
+
+/* Extension info */
 #extension-info {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 15px;
     gap: 10px;
-}
-
-#extension-info h1 {
-    font-size: 12pt;
+    margin-bottom: 10px;
 }
 
 #extension-info img {
     width: 48px;
     height: 48px;
+    border-radius: 6px;
 }
 
+#extension-info h1 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+/* Horizontal line */
 hr.full-width {
-    width: calc(100% + 10px);
-    margin-left: -5px;
-    margin-right: -5px;
-    border: 1px solid;
-    opacity: 0.3;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    width: 100%;
+    border: none;
+    border-top: 1px solid var(--border-color);
+    opacity: 0.5;
+    margin: 15px 0;
 }
 
+/* Buttons */
+.primary-btn, .secondary-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, box-shadow 0.2s ease;
+    font-weight: 500;
+    text-decoration: none;
+    user-select: none;
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.primary-btn:hover {
+    background-color: #357ae8;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.secondary-btn {
+    background-color: var(--secondary-color);
+    color: #fff;
+}
+
+.secondary-btn:hover {
+    background-color: #4e5256;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+.section {
+    margin: 10px 0;
+}
+
+/* Checkbox */
 .checkbox-container {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 5px;
+    gap: 8px;
+    font-size: 14px;
+}
+
+.checkbox-container input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--primary-color);
+}
+
+.checkbox-container span {
+    user-select: none;
+    font-weight: 500;
 }
