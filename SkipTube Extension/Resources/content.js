@@ -75,11 +75,20 @@ function pauseDefaultPlayer() {
 }
 
 function resetDefaultVideoTime() {
-    var videoElement = document.querySelector('.video-stream.html5-main-video');
-    if (videoElement) {
-        videoElement.currentTime = 0;
-        videoElement.play();
-    }    
+    try {
+        var videoElement = document.querySelector('.video-stream.html5-main-video');
+        if (videoElement) {
+            videoElement.currentTime = 0;
+            videoElement.play();
+        } else {
+            // If video element not found, retry in 1 second
+            setTimeout(resetDefaultVideoTime, 1000);
+        }
+    } catch (error) {
+        if (_debug) console.log('Error in resetDefaultVideoTime:', error);
+        // Retry in 1 second if any error occurs
+        setTimeout(resetDefaultVideoTime, 1000);
+    }
 }
 
 function adjustSize() {
