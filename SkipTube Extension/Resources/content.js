@@ -23,6 +23,7 @@ chrome.storage.sync.get(['isPaused', 'autoplay'], function (result) {
     updatePauseInterval();
     setInterval(checkUrlChange, 1000);
     setInterval(adjustSize, 1000);
+    resetDefaultVideoTime();
 });
 
 function updateEmbedVisibility() {
@@ -71,6 +72,14 @@ function pauseDefaultPlayer() {
     if (videoElement && !videoElement.paused) {
         videoElement.pause();
     }
+}
+
+function resetDefaultVideoTime() {
+    var videoElement = document.querySelector('.video-stream.html5-main-video');
+    if (videoElement) {
+        videoElement.currentTime = 0;
+        videoElement.play();
+    }    
 }
 
 function adjustSize() {
@@ -285,12 +294,57 @@ function addNextButtonNextToTitle() {
     }
 }
 
-// Check for the title element at regular intervals
+function addHidePlayerButton() {
+    const titleElement = document.querySelector("#title h1.style-scope.ytd-watch-metadata");
+
+    if (!titleElement) {
+        if (_debug) console.log("Title element not found!");
+        return;
+    }
+
+    // Check if the button already exists
+    const existingButton = document.querySelector("#custom-hide-player-button");
+    if (existingButton) {
+        if (_debug) console.log("Hide Player button already exists!");
+        return;
+    }
+
+    // Create the button
+    const hidePlayerButton = document.createElement('button');
+    hidePlayerButton.id = "custom-hide-player-button";
+    hidePlayerButton.textContent = _playerVisible ? "Hide Player" : "Show Player";
+    hidePlayerButton.style.marginLeft = "10px";
+    hidePlayerButton.style.cursor = "pointer";
+    hidePlayerButton.style.padding = "5px 10px";
+    hidePlayerButton.style.border = "none";
+    hidePlayerButton.style.backgroundColor = "#555";
+    hidePlayerButton.style.color = "#fff";
+    hidePlayerButton.style.borderRadius = "4px";
+    hidePlayerButton.style.fontSize = "14px";
+    hidePlayerButton.style.alignSelf = "center";
+
+    hidePlayerButton.addEventListener("click", () => {
+        _playerVisible = !_playerVisible;
+        updateEmbedVisibility();
+        hidePlayerButton.textContent = _playerVisible ? "Hide Player" : "Show Player";
+        if (_debug) console.log("Player visibility toggled:", _playerVisible);
+    });
+
+    // Insert the button next to the "Next" button
+    const nextButton = document.querySelector("#custom-next-button");
+    if (nextButton) {
+        nextButton.insertAdjacentElement("afterend", hidePlayerButton);
+    } else {
+        titleElement.parentNode.appendChild(hidePlayerButton);
+    }
+}
+
+// Update interval to add both buttons
 const intervalId = setInterval(() => {
     addNextButtonNextToTitle();
+    addHidePlayerButton();
 
-    // Stop checking once the button is added
-    if (document.querySelector("#custom-next-button")) {
+    if (document.querySelector("#custom-next-button") && document.querySelector("#custom-hide-player-button")) {
         clearInterval(intervalId);
     }
 }, 1000);

@@ -24,15 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const _autoplay = document.getElementById("autoplay-checkbox").checked;
         chrome.runtime.sendMessage({message: "updateAutoplay", autoplay: _autoplay});
     });
-    
-    // Toggle player visibility button
-    document.getElementById('toggle-embed-player').addEventListener('click', () => {
-        chrome.runtime.sendMessage({message: "togglePlayerVisibility"}, (response) => {
-            // Update button text based on the new state
-            document.getElementById('toggle-embed-player').textContent = response.visible ? "Hide Player" : "Show Player";
-            if (_debug) console.log('Player visibility toggled:', response.visible);
-        });
-    });
 });
 
 function updateButton(isPaused) {
