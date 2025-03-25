@@ -6,6 +6,7 @@ let _isPaused = false;
 let _autoplay = false;
 let _lastUrl = null;
 let _playerVisible = true; // Default true since we don't store it
+let pauseInterval = false;
 
 // Load settings. TODO: (can be optimized with Promise.all)
 chrome.storage.sync.get(['isPaused', 'autoplay'], function (result) {
@@ -19,6 +20,9 @@ chrome.storage.sync.get(['isPaused', 'autoplay'], function (result) {
         warmUp(); // Run initial cleanup
     }
     updateEmbedVisibility();
+    updatePauseInterval();
+    setInterval(checkUrlChange, 1000);
+    setInterval(adjustSize, 1000);
 });
 
 function updateEmbedVisibility() {
@@ -36,7 +40,7 @@ function replaceYouTubePlayer() {
     
     if (videoId && !_isPaused) {
         const embedCode = `
-          <iframe id="custom-embed" src="https://cdpn.io/pen/debug/oNPzxKo?v=${videoId}${_autoplay ? '&autoplay=1' : ''}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen">
+          <iframe id="custom-embed" src="https://cdpn.io/pen/debug/oNPzxKo?v=${videoId}&autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen="allowfullscreen">
             <a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener">https://www.youtube.com/watch?v=${videoId}</a>
           </iframe>
         `;
@@ -62,7 +66,7 @@ function replaceYouTubePlayer() {
 }
 
 function pauseDefaultPlayer() {
-    if (_isPaused || !_playerVisible) return;
+    if (_isPaused || _autoplay) return;
     var videoElement = document.querySelector('.video-stream.html5-main-video');
     if (videoElement && !videoElement.paused) {
         videoElement.pause();
@@ -89,9 +93,20 @@ function checkUrlChange() {
     }
 }
 
-setInterval(checkUrlChange, 1000);
-setInterval(pauseDefaultPlayer, 1000);
-setInterval(adjustSize, 1000);
+function updatePauseInterval() {
+    if (_autoplay) {
+        // If autoplay is enabled, make sure no pause interval exists
+        if (pauseInterval) {
+            clearInterval(pauseInterval);
+            pauseInterval = null;
+        }
+    } else {
+        // If autoplay is disabled, start pausing the default player
+        if (!pauseInterval) {
+            pauseInterval = setInterval(pauseDefaultPlayer, 1000);
+        }
+    }
+}
 
 function removeAds() {
     const adSelectors = [
@@ -202,7 +217,7 @@ chrome.runtime.onMessage.addListener(function (request) {
         window.location.reload();
     } else if (request.message === 'updateAutoplay') {
         _autoplay = request.autoplay;
-        replaceYouTubePlayer();
+        updatePauseInterval();
     } else if (request.message === 'toggleEmbed') {
         _playerVisible = request.visible;
         updateEmbedVisibility();
