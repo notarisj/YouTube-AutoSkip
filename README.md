@@ -3,9 +3,9 @@
 </p>
 
 # AutoSkip for YouTube (Browser Extension) 
-<a href="https://apps.apple.com/us/app/skiptube/id6502307277?mt=12&itscg=30200&itsct=apps_box_badge&mttnsubad=6502307277">
+<!-- <a href="https://apps.apple.com/us/app/skiptube/id6502307277?mt=12&itscg=30200&itsct=apps_box_badge&mttnsubad=6502307277">
     <img src="https://toolbox.marketingtools.apple.com/api/v2/badges/download-on-the-app-store/black/en-us?releaseDate=1715126400" alt="Download on the App Store" width="245" height="82" />
-</a>
+</a> -->
 
 ## Description
 
